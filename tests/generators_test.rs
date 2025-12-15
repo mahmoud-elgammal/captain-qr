@@ -1,11 +1,11 @@
-use cqr::generators::*;
 use cqr::cli::WifiSecurity;
+use cqr::generators::*;
 
 #[test]
 fn test_wifi_generator() {
     let ssid = "MyNetwork";
     let password = "secret_password";
-    
+
     // WPA
     let wpa = generate_wifi_string(ssid, password, &WifiSecurity::Wpa, false);
     assert_eq!(wpa, "WIFI:T:WPA;S:MyNetwork;P:secret_password;H:false;;");
@@ -22,7 +22,10 @@ fn test_wifi_generator() {
 #[test]
 fn test_email_generator() {
     let email = generate_email_string("user@example.com", "Hello World", "This is body");
-    assert_eq!(email, "mailto:user@example.com?subject=Hello+World&body=This+is+body");
+    assert_eq!(
+        email,
+        "mailto:user@example.com?subject=Hello+World&body=This+is+body"
+    );
 }
 
 #[test]
@@ -41,8 +44,16 @@ fn test_geo_generator() {
 
 #[test]
 fn test_bitcoin_generator() {
-    let btc = generate_bitcoin_string("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", Some(0.5), Some("Genesis".to_string()), None);
-    assert_eq!(btc, "bitcoin:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa?amount=0.5&label=Genesis");
+    let btc = generate_bitcoin_string(
+        "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        Some(0.5),
+        Some("Genesis".to_string()),
+        None,
+    );
+    assert_eq!(
+        btc,
+        "bitcoin:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa?amount=0.5&label=Genesis"
+    );
 }
 
 #[test]

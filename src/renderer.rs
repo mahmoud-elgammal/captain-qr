@@ -57,7 +57,7 @@ impl Color {
 
     /// Convert to image crate Rgb type (unused now but kept for API completeness, optional)
     #[allow(dead_code)]
-    #[must_use] 
+    #[must_use]
     pub const fn to_rgb(self) -> Rgb<u8> {
         Rgb([self.r, self.g, self.b])
     }
@@ -140,12 +140,12 @@ fn create_qr_image(data: &str, config: &RenderConfig) -> Result<ImageBuffer<Rgba
             // Calculate gradient color if enabled
             let draw_color = if let Some(grad_end) = config.gradient_color {
                 let progress = (px_x as f32 + px_y as f32) / (actual_size as f32 * 2.0);
-                let r = (f32::from(grad_end.r) - f32::from(config.fg_color.r)).mul_add(progress, f32::from(config.fg_color.r))
-                    as u8;
-                let g = (f32::from(grad_end.g) - f32::from(config.fg_color.g)).mul_add(progress, f32::from(config.fg_color.g))
-                    as u8;
-                let b = (f32::from(grad_end.b) - f32::from(config.fg_color.b)).mul_add(progress, f32::from(config.fg_color.b))
-                    as u8;
+                let r = (f32::from(grad_end.r) - f32::from(config.fg_color.r))
+                    .mul_add(progress, f32::from(config.fg_color.r)) as u8;
+                let g = (f32::from(grad_end.g) - f32::from(config.fg_color.g))
+                    .mul_add(progress, f32::from(config.fg_color.g)) as u8;
+                let b = (f32::from(grad_end.b) - f32::from(config.fg_color.b))
+                    .mul_add(progress, f32::from(config.fg_color.b)) as u8;
                 Rgba([r, g, b, 255])
             } else {
                 Rgba([config.fg_color.r, config.fg_color.g, config.fg_color.b, 255])
@@ -206,42 +206,65 @@ pub fn render_to_svg(data: &str, config: &RenderConfig) -> Result<String> {
 
     let code = create_qr_code(data, config.ec_level)?;
     let module_count = code.width();
-    
+
     let total_modules = module_count + (config.quiet_zone as usize * 2);
     let module_size = config.size / total_modules as u32;
     let actual_size = module_size * total_modules as u32;
-    
-    let fg_hex = format!("#{:02x}{:02x}{:02x}", config.fg_color.r, config.fg_color.g, config.fg_color.b);
-    let bg_hex = format!("#{:02x}{:02x}{:02x}", config.bg_color.r, config.bg_color.g, config.bg_color.b);
-    
+
+    let fg_hex = format!(
+        "#{:02x}{:02x}{:02x}",
+        config.fg_color.r, config.fg_color.g, config.fg_color.b
+    );
+    let bg_hex = format!(
+        "#{:02x}{:02x}{:02x}",
+        config.bg_color.r, config.bg_color.g, config.bg_color.b
+    );
+
     let mut svg = String::from(r#"<?xml version="1.0" encoding="UTF-8"?>"#);
     write!(svg, r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" width="{size}" height="{size}">"#, size = actual_size).unwrap();
-    
+
     // Gradient definitions
     let fill_attr = if let Some(grad_end) = config.gradient_color {
         let grad_hex = format!("#{:02x}{:02x}{:02x}", grad_end.r, grad_end.g, grad_end.b);
         svg.push_str(r#"<defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">"#);
-        write!(svg, r#"<stop offset="0%" style="stop-color:{};stop-opacity:1" />"#, fg_hex).unwrap();
-        write!(svg, r#"<stop offset="100%" style="stop-color:{};stop-opacity:1" />"#, grad_hex).unwrap();
+        write!(
+            svg,
+            r#"<stop offset="0%" style="stop-color:{};stop-opacity:1" />"#,
+            fg_hex
+        )
+        .unwrap();
+        write!(
+            svg,
+            r#"<stop offset="100%" style="stop-color:{};stop-opacity:1" />"#,
+            grad_hex
+        )
+        .unwrap();
         svg.push_str(r"</linearGradient></defs>");
         "url(#grad)".to_string()
     } else {
         fg_hex
     };
 
-    write!(svg, r#"<rect width="100%" height="100%" fill="{}"/>"#, bg_hex).unwrap();
+    write!(
+        svg,
+        r#"<rect width="100%" height="100%" fill="{}"/>"#,
+        bg_hex
+    )
+    .unwrap();
 
     let colors = code.to_colors();
     let quiet_offset = config.quiet_zone * module_size;
-    
+
     for (i, color) in colors.iter().enumerate() {
         if *color == qrcode::Color::Dark {
             let x = (i % module_count) as u32 * module_size + quiet_offset;
             let y = (i / module_count) as u32 * module_size + quiet_offset;
-            write!(svg, 
+            write!(
+                svg,
                 r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}"/>"#,
                 x, y, module_size, module_size, fill_attr
-            ).unwrap();
+            )
+            .unwrap();
             svg.push('\n');
         }
     }
@@ -249,35 +272,42 @@ pub fn render_to_svg(data: &str, config: &RenderConfig) -> Result<String> {
     // Logo support
     if let Some(logo_path) = &config.logo {
         let logo_img = image::open(logo_path).map_err(|e| QrError::FileWrite {
-             path: logo_path.clone(),
-             source: std::io::Error::new(std::io::ErrorKind::Other, format!("Failed to load logo: {}", e)),
+            path: logo_path.clone(),
+            source: std::io::Error::new(
+                std::io::ErrorKind::Other,
+                format!("Failed to load logo: {}", e),
+            ),
         })?;
 
         // Calculate logo size (20% of QR)
         let logo_size = actual_size / 5;
         let logo_rgba = logo_img.to_rgba8();
         let resized_logo = resize(&logo_rgba, logo_size, logo_size, FilterType::Lanczos3);
-        
+
         // Encode resized logo to PNG base64
         let mut buffer = Vec::new();
         let encoder = PngEncoder::new(&mut buffer);
-        encoder.write_image(
-            resized_logo.as_raw(),
-            logo_size,
-            logo_size,
-            image::ColorType::Rgba8,
-        ).map_err(|e| QrError::ImageError(e.to_string()))?;
-        
+        encoder
+            .write_image(
+                resized_logo.as_raw(),
+                logo_size,
+                logo_size,
+                image::ColorType::Rgba8,
+            )
+            .map_err(|e| QrError::ImageError(e.to_string()))?;
+
         let b64_logo = STANDARD.encode(&buffer);
         let logo_uri = format!("data:image/png;base64,{}", b64_logo);
 
         let center_x = (actual_size - logo_size) / 2;
         let center_y = (actual_size - logo_size) / 2;
 
-        write!(svg,
+        write!(
+            svg,
             r#"<image x="{}" y="{}" width="{}" height="{}" href="{}" />"#,
             center_x, center_y, logo_size, logo_size, logo_uri
-        ).unwrap();
+        )
+        .unwrap();
     }
 
     svg.push_str("</svg>");

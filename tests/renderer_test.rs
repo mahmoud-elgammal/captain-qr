@@ -1,12 +1,12 @@
-use cqr::renderer::{RenderConfig, render_to_svg, render_to_base64, Color, render_to_terminal};
+use cqr::renderer::{render_to_base64, render_to_svg, render_to_terminal, Color, RenderConfig};
 
 #[test]
 fn test_render_to_svg() {
     let data = "Hello SVG";
     let config = RenderConfig::default();
-    
+
     let svg = render_to_svg(data, &config).expect("Failed to render SVG");
-    
+
     assert!(svg.starts_with("<?xml"));
     assert!(svg.contains("<svg"));
     assert!(svg.contains("rect"));
@@ -23,9 +23,9 @@ fn test_render_to_base64() {
         size: 256,
         ..RenderConfig::default()
     };
-    
+
     let b64 = render_to_base64(data, &config).expect("Failed to render Base64");
-    
+
     assert!(b64.starts_with("data:image/png;base64,"));
     assert!(b64.len() > 100);
 }
@@ -34,9 +34,9 @@ fn test_render_to_base64() {
 fn test_render_to_terminal() {
     let data = "Hello Terminal";
     let config = RenderConfig::default();
-    
+
     let term = render_to_terminal(data, &config).expect("Failed to render Terminal");
-    
+
     // Terminal output uses unicode block characters, just check it's not empty
     assert!(!term.is_empty());
 }
@@ -51,9 +51,9 @@ fn test_render_config_custom() {
         bg_color: Color { r: 0, g: 0, b: 255 }, // Blue
         ..RenderConfig::default()
     };
-    
+
     let svg = render_to_svg(data, &config).expect("Failed to render SVG");
-    
+
     assert!(svg.contains("fill=\"#ff0000\"")); // Red foreground
     assert!(svg.contains("fill=\"#0000ff\"")); // Blue background
 }

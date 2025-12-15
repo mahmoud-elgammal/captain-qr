@@ -13,8 +13,6 @@ pub mod error;
 pub mod generators;
 pub mod renderer;
 
-
-
 pub mod wizard;
 
 use clap::{CommandFactory, Parser};

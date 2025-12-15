@@ -149,7 +149,7 @@ pub fn interactive_mode() -> Result<String> {
             let path: String = Input::with_theme(&ColorfulTheme::default())
                 .with_prompt("Image Path or URL")
                 .interact_text()?;
-            
+
             let result = crate::decoder::decode(&path)?;
             Ok(result.content)
         }

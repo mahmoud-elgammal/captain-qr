@@ -30,8 +30,6 @@ pub enum QrError {
     #[error("Failed to decode QR code from image: {0}")]
     DecodeError(String),
 
-
-
     #[error("Failed to parse CSV: {0}")]
     CsvError(String),
 

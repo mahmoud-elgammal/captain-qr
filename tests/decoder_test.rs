@@ -1,5 +1,5 @@
-use cqr::renderer::{RenderConfig, render_to_png};
 use cqr::decoder::decode;
+use cqr::renderer::{render_to_png, RenderConfig};
 use tempfile::Builder;
 
 #[test]
@@ -7,7 +7,7 @@ fn test_decode_generated_qr() {
     // 1. Generate a QR code
     let data = "https://example.com/test-decode";
     let config = RenderConfig::default();
-    
+
     // 2. Create a temporary file path
     let temp_file = Builder::new()
         .suffix(".png")
