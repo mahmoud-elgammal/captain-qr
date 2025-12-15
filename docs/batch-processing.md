@@ -15,36 +15,38 @@ contact,BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nEND:VCARD
 ```
 
 Generate:
+
 ```bash
-captain-qr batch --input data.csv --output-dir ./qrcodes/
+cqr batch --input data.csv --output-dir ./qrcodes/
 ```
 
 ## JSON Format
 
 ```json
 [
-  {"filename": "wifi_home", "data": "WIFI:T:WPA;S:Home;P:pass;;"},
-  {"filename": "website", "data": "https://example.com"},
-  {"filename": "email", "data": "mailto:contact@example.com"}
+  { "filename": "wifi_home", "data": "WIFI:T:WPA;S:Home;P:pass;;" },
+  { "filename": "website", "data": "https://example.com" },
+  { "filename": "email", "data": "mailto:contact@example.com" }
 ]
 ```
 
 Generate:
+
 ```bash
-captain-qr batch --input data.json --output-dir ./qrcodes/
+cqr batch --input data.json --output-dir ./qrcodes/
 ```
 
 ## Options
 
 ```bash
 # SVG output
-captain-qr batch --input data.csv --output-dir ./codes/ --format svg
+cqr batch --input data.csv --output-dir ./codes/ --format svg
 
 # Custom size and colors
-captain-qr batch -i data.json -o ./codes/ -s 1024 --fg-color "#0066CC"
+cqr batch -i data.json -o ./codes/ -s 1024 --fg-color "#0066CC"
 
 # High error correction
-captain-qr batch -i data.csv -o ./codes/ -e h
+cqr batch -i data.csv -o ./codes/ -e h
 ```
 
 ## Progress

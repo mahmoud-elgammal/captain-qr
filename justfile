@@ -79,7 +79,7 @@ install:
 
 # Uninstall the binary
 uninstall:
-    cargo uninstall captain-qr
+    cargo uninstall cqr
 
 # Generate shell completions
 completions:

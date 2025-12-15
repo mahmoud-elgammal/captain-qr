@@ -9,23 +9,23 @@ Welcome to the Captain QR documentation! This folder contains comprehensive guid
 cargo install --path .
 
 # Generate a WiFi QR code
-captain-qr wifi -s "NetworkName" -p "password"
+cqr wifi -s "NetworkName" -p "password"
 
 # Generate a URL QR code
-captain-qr url "https://example.com"
+cqr url "https://example.com"
 
 # Decode a QR code
-captain-qr decode image.png
+cqr decode image.png
 ```
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
-| [Commands](commands.md) | All available commands and options |
-| [Output Formats](output-formats.md) | PNG, SVG, terminal, and base64 output |
+| Document                                | Description                              |
+| --------------------------------------- | ---------------------------------------- |
+| [Commands](commands.md)                 | All available commands and options       |
+| [Output Formats](output-formats.md)     | PNG, SVG, terminal, and base64 output    |
 | [Batch Processing](batch-processing.md) | Generate multiple QR codes from CSV/JSON |
-| [Examples](examples.md) | Real-world usage examples |
+| [Examples](examples.md)                 | Real-world usage examples                |
 
 ## Features
 

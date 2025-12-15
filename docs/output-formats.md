@@ -7,8 +7,8 @@ Captain QR supports 4 output formats for generated QR codes.
 Raster image format, ideal for most use cases.
 
 ```bash
-captain-qr text "Hello" --format png -o code.png
-captain-qr url "https://example.com" -s 1024 -o large.png
+cqr text "Hello" --format png -o code.png
+cqr url "https://example.com" -s 1024 -o large.png
 ```
 
 ## SVG
@@ -16,8 +16,8 @@ captain-qr url "https://example.com" -s 1024 -o large.png
 Vector format, scales without quality loss. Best for print.
 
 ```bash
-captain-qr text "Hello" --format svg -o code.svg
-captain-qr wifi -s "Net" -p "pass" --format svg -o wifi.svg
+cqr text "Hello" --format svg -o code.svg
+cqr wifi -s "Net" -p "pass" --format svg -o wifi.svg
 ```
 
 ## Terminal
@@ -25,8 +25,8 @@ captain-qr wifi -s "Net" -p "pass" --format svg -o wifi.svg
 Print directly to terminal using Unicode blocks.
 
 ```bash
-captain-qr text "Hello" --format terminal
-captain-qr url "https://example.com" -F terminal
+cqr text "Hello" --format terminal
+cqr url "https://example.com" -F terminal
 ```
 
 ## Base64
@@ -34,13 +34,14 @@ captain-qr url "https://example.com" -F terminal
 Data URI format for embedding in HTML/Markdown.
 
 ```bash
-captain-qr text "Hello" --format base64
+cqr text "Hello" --format base64
 # Output: data:image/png;base64,iVBORw0KGgo...
 ```
 
 Use in HTML:
+
 ```html
-<img src="data:image/png;base64,iVBORw0KGgo..." alt="QR Code">
+<img src="data:image/png;base64,iVBORw0KGgo..." alt="QR Code" />
 ```
 
 ---
@@ -51,34 +52,34 @@ Use in HTML:
 
 ```bash
 # Red QR code
-captain-qr text "Red" --fg-color "#FF0000"
+cqr text "Red" --fg-color "#FF0000"
 
 # Blue on light blue
-captain-qr text "Blue" --fg-color "#0066CC" --bg-color "#E6F3FF"
+cqr text "Blue" --fg-color "#0066CC" --bg-color "#E6F3FF"
 
 # Short hex format
-captain-qr text "Short" --fg-color "#F00" --bg-color "#FFF"
+cqr text "Short" --fg-color "#F00" --bg-color "#FFF"
 ```
 
 ### Error Correction
 
-| Level | Recovery | Use Case |
-|-------|----------|----------|
-| `l` | ~7% | Maximum data, clean environment |
-| `m` | ~15% | Default, balanced |
-| `q` | ~25% | Outdoor use |
-| `h` | ~30% | Logo overlay, harsh conditions |
+| Level | Recovery | Use Case                        |
+| ----- | -------- | ------------------------------- |
+| `l`   | ~7%      | Maximum data, clean environment |
+| `m`   | ~15%     | Default, balanced               |
+| `q`   | ~25%     | Outdoor use                     |
+| `h`   | ~30%     | Logo overlay, harsh conditions  |
 
 ```bash
-captain-qr text "Resilient" -e h
-captain-qr text "Compact" -e l
+cqr text "Resilient" -e h
+cqr text "Compact" -e l
 ```
 
 ### Size
 
 ```bash
-captain-qr text "Small" -s 256    # 256x256 pixels
-captain-qr text "Large" -s 1024   # 1024x1024 pixels
+cqr text "Small" -s 256    # 256x256 pixels
+cqr text "Large" -s 1024   # 1024x1024 pixels
 ```
 
 ### Quiet Zone
@@ -86,7 +87,7 @@ captain-qr text "Large" -s 1024   # 1024x1024 pixels
 The border around the QR code (in modules):
 
 ```bash
-captain-qr text "Normal" --quiet-zone 2   # Default
-captain-qr text "Wide" --quiet-zone 4
-captain-qr text "None" --quiet-zone 0
+cqr text "Normal" --quiet-zone 2   # Default
+cqr text "Wide" --quiet-zone 4
+cqr text "None" --quiet-zone 0
 ```

@@ -1,9 +1,9 @@
-//! Custom error types for captain-qr
+//! Custom error types for cqr
 
 use std::path::PathBuf;
 use thiserror::Error;
 
-/// Result type alias for captain-qr operations
+/// Result type alias for cqr operations
 pub type Result<T> = std::result::Result<T, QrError>;
 
 /// Custom error types with helpful messages

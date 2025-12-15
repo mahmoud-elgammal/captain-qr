@@ -55,8 +55,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/captain-qr.git
-cd captain-qr
+git clone https://github.com/YOUR_USERNAME/cqr.git
+cd cqr
 
 # Install dependencies and build
 cargo build
@@ -71,7 +71,7 @@ just quality
 ### Project Structure
 
 ```
-captain-qr/
+cqr/
 ├── src/
 │   ├── main.rs        # Entry point and command dispatch
 │   ├── cli.rs         # CLI argument definitions
