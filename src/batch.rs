@@ -49,7 +49,7 @@ pub fn process_batch(
             OutputFormat::Png | OutputFormat::Terminal | OutputFormat::Base64 => "png",
             OutputFormat::Svg => "svg",
         };
-        
+
         let output_path = output_dir.join(format!("{}.{}", record.filename, extension));
 
         match format {
@@ -104,7 +104,7 @@ fn read_json(path: &PathBuf) -> Result<Vec<BatchRecord>> {
         path: path.clone(),
         source: e,
     })?;
-    
+
     let records: Vec<BatchRecord> = serde_json::from_str(&content)?;
     Ok(records)
 }

@@ -5,7 +5,11 @@ use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "cqr")]
-#[command(author, version, about = "🏴‍☠️ Generate and decode QR codes like a captain!")]
+#[command(
+    author,
+    version,
+    about = "🏴‍☠️ Generate and decode QR codes like a captain!"
+)]
 #[command(after_help = "Examples:
   cqr wifi -s 'MyNetwork' -p 'secret123'
   cqr url 'https://example.com' -o link.png

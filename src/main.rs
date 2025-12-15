@@ -23,7 +23,9 @@ use generators::{
     generate_phone_string, generate_sepa_string, generate_sms_string, generate_vcard_string,
     generate_wifi_string,
 };
-use renderer::{render_to_base64, render_to_png, render_to_svg_file, render_to_terminal, Color, RenderConfig};
+use renderer::{
+    render_to_base64, render_to_png, render_to_svg_file, render_to_terminal, Color, RenderConfig,
+};
 
 fn main() {
     if let Err(e) = run() {
@@ -138,12 +140,7 @@ fn run() -> Result<()> {
                 amount,
                 label,
                 message,
-            } => generate_bitcoin_string(
-                address,
-                *amount,
-                label.as_deref(),
-                message.as_deref(),
-            ),
+            } => generate_bitcoin_string(address, *amount, label.as_deref(), message.as_deref()),
             Commands::Event {
                 title,
                 start,
