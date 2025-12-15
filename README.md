@@ -1,14 +1,16 @@
 # 🏴‍☠️ Captain QR
 
-A professional-grade CLI tool for generating and decoding QR codes. Supports WiFi, URLs, contacts, payments, and more.
+A professional CLI tool for generating and decoding QR codes. Supports WiFi, URLs, contacts, payments, and more.
 
 ## ✨ Features
 
+- **Start Interactive Wizard**: Just run `cqr` without arguments!
 - **Multiple Data Types**: WiFi, URLs, text, email, phone, SMS, vCard, geo, Bitcoin, calendar events, SEPA payments
 - **Output Formats**: PNG, SVG, terminal (Unicode), Base64
-- **Customization**: Colors, error correction levels, quiet zone
+- **Customization**: Colors, Gradients, Logo Overlay, error correction levels, quiet zone
 - **Batch Processing**: Generate from CSV/JSON files with progress bars
-- **QR Decoding**: Read QR codes from images
+- **QR Decoding**: Read QR codes from images or URLs
+- **Human Senses**: Friendly crash reports and error messages
 - **Shell Completions**: Bash, Zsh, Fish, PowerShell
 
 ## 📦 Installation
@@ -18,6 +20,16 @@ cargo install --path .
 ```
 
 ## 🚀 Usage
+
+### 🧙 Interactive Wizard
+
+Run without arguments to start the wizard:
+
+```bash
+cqr
+```
+
+Select "Scan/Decode QR Code" to scan a file or URL!
 
 ### WiFi Network
 
@@ -107,6 +119,7 @@ cqr text "Big Border" --quiet-zone 4
 
 ```bash
 cqr decode image.png
+cqr decode "https://example.com/qr.png"  # Decode from URL!
 cqr decode photo.jpg --json  # JSON output
 ```
 
