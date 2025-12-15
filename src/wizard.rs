@@ -20,6 +20,7 @@ pub fn interactive_mode() -> Result<String> {
         "Bitcoin",
         "Event",
         "SEPA Payment",
+        "Scan/Decode QR Code",
     ];
 
     let selection = Select::with_theme(&ColorfulTheme::default())
@@ -143,7 +144,15 @@ pub fn interactive_mode() -> Result<String> {
                 .interact_text()?;
             Ok(generate_geo_string(lat, lon))
         }
-        // ... (can implement others, but this is a good start)
+        // Scan/Decode
+        11 => {
+            let path: String = Input::with_theme(&ColorfulTheme::default())
+                .with_prompt("Image Path or URL")
+                .interact_text()?;
+            
+            let result = crate::decoder::decode(&path)?;
+            Ok(result.content)
+        }
         _ => {
             // Fallback for not implemented
             let text: String = Input::with_theme(&ColorfulTheme::default())

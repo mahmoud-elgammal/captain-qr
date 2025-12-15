@@ -57,6 +57,7 @@ impl Color {
 
     /// Convert to image crate Rgb type (unused now but kept for API completeness, optional)
     #[allow(dead_code)]
+    #[must_use] 
     pub const fn to_rgb(self) -> Rgb<u8> {
         Rgb([self.r, self.g, self.b])
     }

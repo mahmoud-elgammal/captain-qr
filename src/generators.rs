@@ -4,6 +4,7 @@ use crate::cli::WifiSecurity;
 use std::fmt::Write;
 
 /// Generate `WiFi` connection string in standard format
+#[must_use] 
 pub fn generate_wifi_string(
     ssid: &str,
     password: &str,
@@ -20,6 +21,7 @@ pub fn generate_wifi_string(
 }
 
 /// Generate email mailto: string with optional subject and body
+#[must_use] 
 pub fn generate_email_string(address: &str, subject: &str, body: &str) -> String {
     format!(
         "mailto:{}?subject={}&body={}",
@@ -30,11 +32,13 @@ pub fn generate_email_string(address: &str, subject: &str, body: &str) -> String
 }
 
 /// Generate SMS string with optional message body
+#[must_use] 
 pub fn generate_sms_string(number: &str, message: &str) -> String {
     format!("smsto:{number}:{message}")
 }
 
 /// Generate vCard 3.0 format string for contact information
+#[must_use] 
 pub fn generate_vcard_string(
     first_name: &str,
     last_name: &str,
@@ -59,16 +63,19 @@ pub fn generate_vcard_string(
 }
 
 /// Generate geographic location string
+#[must_use] 
 pub fn generate_geo_string(lat: f64, lon: f64) -> String {
     format!("geo:{lat},{lon}")
 }
 
 /// Generate phone number string
+#[must_use] 
 pub fn generate_phone_string(number: &str) -> String {
     format!("tel:{number}")
 }
 
 /// Generate Bitcoin payment URI (BIP21)
+#[must_use] 
 pub fn generate_bitcoin_string(
     address: &str,
     amount: Option<f64>,
@@ -97,6 +104,7 @@ pub fn generate_bitcoin_string(
 }
 
 /// Generate calendar event in vCalendar format
+#[must_use] 
 pub fn generate_event_string(
     summary: &str,
     start: &str,
@@ -120,6 +128,7 @@ pub fn generate_event_string(
 }
 
 /// Generate SEPA payment QR code (EPC QR Code)
+#[must_use] 
 pub fn generate_sepa_string(
     name: &str,
     iban: &str,

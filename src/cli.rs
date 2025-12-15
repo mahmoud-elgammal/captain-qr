@@ -90,6 +90,7 @@ pub enum ErrorCorrectionLevel {
 }
 
 impl ErrorCorrectionLevel {
+    #[must_use] 
     pub const fn to_qrcode_ecl(&self) -> qrcode::EcLevel {
         match self {
             Self::L => qrcode::EcLevel::L,
