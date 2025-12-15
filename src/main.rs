@@ -1,6 +1,6 @@
 //! Captain QR - A professional CLI tool to generate and decode QR codes
 //!
-//! Generate QR codes for WiFi, URLs, contacts, payments, and more.
+//! Generate QR codes for `WiFi`, URLs, contacts, payments, and more.
 //! Supports PNG, SVG, terminal, and base64 output formats.
 
 mod batch;
@@ -9,7 +9,7 @@ mod decoder;
 mod error;
 mod generators;
 mod renderer;
-mod utils;
+
 
 mod wizard;
 
@@ -34,6 +34,7 @@ fn main() {
     }
 }
 
+#[allow(clippy::too_many_lines)]
 fn run() -> Result<()> {
     let cli = Cli::parse();
 
@@ -75,12 +76,10 @@ fn run() -> Result<()> {
                             "source": input
                         })
                     );
+                } else if cli.quiet {
+                    println!("{}", result.content);
                 } else {
-                    if !cli.quiet {
-                        println!("{} {}", "📖 Decoded:".green().bold(), result.content);
-                    } else {
-                        println!("{}", result.content);
-                    }
+                    println!("{} {}", "📖 Decoded:".green().bold(), result.content);
                 }
                 return Ok(());
             }
@@ -140,7 +139,7 @@ fn run() -> Result<()> {
                 amount,
                 label,
                 message,
-            } => generate_bitcoin_string(address, *amount, label.as_deref(), message.as_deref()),
+            } => generate_bitcoin_string(address, *amount, label.clone(), message.clone()),
             Commands::Event {
                 title,
                 start,
@@ -151,15 +150,15 @@ fn run() -> Result<()> {
                 title,
                 start,
                 end,
-                location.as_deref(),
-                description.as_deref(),
+                location.as_deref().unwrap_or(""),
+                description.as_deref().unwrap_or(""),
             ),
             Commands::Sepa {
                 name,
                 iban,
                 amount,
                 reference,
-            } => generate_sepa_string(name, iban, *amount, reference.as_deref()),
+            } => generate_sepa_string(name, iban, None, *amount, reference.clone(), None),
             // These are handled above
             Commands::Decode { .. } | Commands::Batch { .. } | Commands::Completions { .. } => {
                 unreachable!()
@@ -185,7 +184,7 @@ fn run() -> Result<()> {
     match cli.format {
         OutputFormat::Terminal => {
             let qr = render_to_terminal(&data, &config)?;
-            println!("{}", qr);
+            println!("{qr}");
         }
         OutputFormat::Png => {
             render_to_png(&data, &cli.output, &config)?;
@@ -209,7 +208,7 @@ fn run() -> Result<()> {
         }
         OutputFormat::Base64 => {
             let b64 = render_to_base64(&data, &config)?;
-            println!("{}", b64);
+            println!("{b64}");
         }
     }
 

@@ -52,7 +52,7 @@ pub struct Cli {
     #[arg(long, global = true)]
     pub logo: Option<PathBuf>,
 
-    /// Gradient color (to) in hex format - creates a gradient from fg_color
+    /// Gradient color (to) in hex format - creates a gradient from `fg_color`
     #[arg(long, global = true)]
     pub gradient_color: Option<String>,
 
@@ -65,7 +65,7 @@ pub struct Cli {
     pub quiet: bool,
 }
 
-#[derive(Clone, ValueEnum, Debug, PartialEq)]
+#[derive(Clone, ValueEnum, Debug, PartialEq, Eq)]
 pub enum OutputFormat {
     /// PNG image file
     Png,
@@ -90,19 +90,19 @@ pub enum ErrorCorrectionLevel {
 }
 
 impl ErrorCorrectionLevel {
-    pub fn to_qrcode_ecl(&self) -> qrcode::EcLevel {
+    pub const fn to_qrcode_ecl(&self) -> qrcode::EcLevel {
         match self {
-            ErrorCorrectionLevel::L => qrcode::EcLevel::L,
-            ErrorCorrectionLevel::M => qrcode::EcLevel::M,
-            ErrorCorrectionLevel::Q => qrcode::EcLevel::Q,
-            ErrorCorrectionLevel::H => qrcode::EcLevel::H,
+            Self::L => qrcode::EcLevel::L,
+            Self::M => qrcode::EcLevel::M,
+            Self::Q => qrcode::EcLevel::Q,
+            Self::H => qrcode::EcLevel::H,
         }
     }
 }
 
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Generate QR code for WiFi network
+    /// Generate QR code for `WiFi` network
     Wifi {
         /// Network SSID (name)
         #[arg(short, long)]
@@ -303,12 +303,4 @@ pub enum WifiSecurity {
     None,
 }
 
-impl WifiSecurity {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            WifiSecurity::Wpa => "WPA",
-            WifiSecurity::Wep => "WEP",
-            WifiSecurity::None => "nopass",
-        }
-    }
-}
+

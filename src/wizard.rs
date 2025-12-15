@@ -6,6 +6,7 @@ use crate::generators::{
 };
 use dialoguer::{theme::ColorfulTheme, Confirm, Input, Password, Select};
 
+#[allow(clippy::too_many_lines)]
 pub fn interactive_mode() -> Result<String> {
     let types = vec![
         "WiFi Network",
@@ -48,7 +49,7 @@ pub fn interactive_mode() -> Result<String> {
                 _ => WifiSecurity::None,
             };
 
-            let password = if let WifiSecurity::None = security {
+            let password = if matches!(security, WifiSecurity::None) {
                 String::new()
             } else {
                 Password::with_theme(&ColorfulTheme::default())

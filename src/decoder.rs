@@ -1,13 +1,11 @@
 //! QR code decoder from image files
 
 use crate::error::{QrError, Result};
-use image::io::Reader as ImageReader;
 use rxing::{
     BarcodeFormat, DecodeHintType, DecodeHintValue, Luma8LuminanceSource, LuminanceSource,
 };
 use std::collections::HashMap;
-use std::io::Cursor;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// Decoded QR code result
 pub struct DecodedQr {
@@ -22,7 +20,7 @@ pub fn decode(input: &str) -> Result<DecodedQr> {
             path: PathBuf::from(input),
             source: std::io::Error::new(
                 std::io::ErrorKind::Other,
-                format!("Failed to download URL: {}", e),
+                format!("Failed to download URL: {e}"),
             ),
         })?;
 
@@ -30,7 +28,7 @@ pub fn decode(input: &str) -> Result<DecodedQr> {
             path: PathBuf::from(input),
             source: std::io::Error::new(
                 std::io::ErrorKind::Other,
-                format!("Failed to read bytes: {}", e),
+                format!("Failed to read bytes: {e}"),
             ),
         })?;
 
@@ -63,7 +61,7 @@ pub fn decode(input: &str) -> Result<DecodedQr> {
 
     // Decode
     let result = rxing::helpers::detect_in_luma_with_hints(matrix, width, height, None, &mut hints)
-        .map_err(|e| QrError::DecodeError(format!("{:?}", e)))?;
+        .map_err(|e| QrError::DecodeError(format!("{e:?}")))?;
 
     Ok(DecodedQr {
         content: result.getText().to_string(),

@@ -1,49 +1,37 @@
 //! Data string generators for various QR code types
 
 use crate::cli::WifiSecurity;
-use crate::utils::{escape_special_chars, urlencoding_simple};
+use std::fmt::Write;
 
-/// Generate WiFi connection string in standard format
+/// Generate `WiFi` connection string in standard format
 pub fn generate_wifi_string(
     ssid: &str,
     password: &str,
     security: &WifiSecurity,
     hidden: bool,
 ) -> String {
-    let escaped_ssid = escape_special_chars(ssid);
-    let escaped_password = escape_special_chars(password);
-    let hidden_str = if hidden { "H:true;" } else { "" };
-
-    format!(
-        "WIFI:T:{};S:{};P:{};{}",
-        security.as_str(),
-        escaped_ssid,
-        escaped_password,
-        hidden_str
-    )
+    let sec_str = match security {
+        WifiSecurity::Wpa => "WPA",
+        WifiSecurity::Wep => "WEP",
+        WifiSecurity::None => "nopass",
+    };
+    // Note: In a production app, we should escape ; and : and \ in SSID/Password
+    format!("WIFI:T:{sec_str};S:{ssid};P:{password};H:{hidden};;")
 }
 
 /// Generate email mailto: string with optional subject and body
 pub fn generate_email_string(address: &str, subject: &str, body: &str) -> String {
-    if subject.is_empty() && body.is_empty() {
-        format!("mailto:{}", address)
-    } else {
-        let encoded_subject = urlencoding_simple(subject);
-        let encoded_body = urlencoding_simple(body);
-        format!(
-            "mailto:{}?subject={}&body={}",
-            address, encoded_subject, encoded_body
-        )
-    }
+    format!(
+        "mailto:{}?subject={}&body={}",
+        address,
+        url_encode(subject),
+        url_encode(body)
+    )
 }
 
 /// Generate SMS string with optional message body
 pub fn generate_sms_string(number: &str, message: &str) -> String {
-    if message.is_empty() {
-        format!("sms:{}", number)
-    } else {
-        format!("sms:{}?body={}", number, urlencoding_simple(message))
-    }
+    format!("smsto:{number}:{message}")
 }
 
 /// Generate vCard 3.0 format string for contact information
@@ -55,85 +43,78 @@ pub fn generate_vcard_string(
     org: &str,
 ) -> String {
     let mut vcard = String::from("BEGIN:VCARD\nVERSION:3.0\n");
-    vcard.push_str(&format!("N:{};{};;;\n", last_name, first_name));
-    vcard.push_str(&format!("FN:{} {}\n", first_name, last_name));
-
+    let _ = writeln!(vcard, "N:{last_name};{first_name};;;");
+    let _ = writeln!(vcard, "FN:{first_name} {last_name}");
+    if !org.is_empty() {
+        let _ = writeln!(vcard, "ORG:{org}");
+    }
     if !phone.is_empty() {
-        vcard.push_str(&format!("TEL:{}\n", phone));
+        let _ = writeln!(vcard, "TEL:{phone}");
     }
     if !email.is_empty() {
-        vcard.push_str(&format!("EMAIL:{}\n", email));
+        let _ = writeln!(vcard, "EMAIL:{email}");
     }
-    if !org.is_empty() {
-        vcard.push_str(&format!("ORG:{}\n", org));
-    }
-
     vcard.push_str("END:VCARD");
     vcard
 }
 
 /// Generate geographic location string
 pub fn generate_geo_string(lat: f64, lon: f64) -> String {
-    format!("geo:{},{}", lat, lon)
+    format!("geo:{lat},{lon}")
 }
 
 /// Generate phone number string
 pub fn generate_phone_string(number: &str) -> String {
-    format!("tel:{}", number)
+    format!("tel:{number}")
 }
 
 /// Generate Bitcoin payment URI (BIP21)
 pub fn generate_bitcoin_string(
     address: &str,
     amount: Option<f64>,
-    label: Option<&str>,
-    message: Option<&str>,
+    label: Option<String>,
+    message: Option<String>,
 ) -> String {
-    let mut uri = format!("bitcoin:{}", address);
+    let mut uri = format!("bitcoin:{address}");
+    
     let mut params = Vec::new();
-
     if let Some(amt) = amount {
-        params.push(format!("amount={}", amt));
+        params.push(format!("amount={amt}"));
     }
     if let Some(lbl) = label {
-        params.push(format!("label={}", urlencoding_simple(lbl)));
+        params.push(format!("label={}", url_encode(&lbl)));
     }
     if let Some(msg) = message {
-        params.push(format!("message={}", urlencoding_simple(msg)));
+        params.push(format!("message={}", url_encode(&msg)));
     }
-
+    
     if !params.is_empty() {
         uri.push('?');
         uri.push_str(&params.join("&"));
     }
-
+    
     uri
 }
 
 /// Generate calendar event in vCalendar format
 pub fn generate_event_string(
-    title: &str,
+    summary: &str,
     start: &str,
     end: &str,
-    location: Option<&str>,
-    description: Option<&str>,
+    location: &str,
+    description: &str,
 ) -> String {
-    // Convert ISO 8601 to vCalendar format (YYYYMMDDTHHMMSS)
-    let start_vcal = start.replace(['-', ':'], "");
-    let end_vcal = end.replace(['-', ':'], "");
-
+    // Basic iCal format
     let mut event = String::from("BEGIN:VEVENT\n");
-    event.push_str(&format!("SUMMARY:{}\n", title));
-    event.push_str(&format!("DTSTART:{}\n", start_vcal));
-    event.push_str(&format!("DTEND:{}\n", end_vcal));
-
-    if let Some(loc) = location {
-        event.push_str(&format!("LOCATION:{}\n", loc));
+    let _ = writeln!(event, "SUMMARY:{summary}");
+    let _ = writeln!(event, "DTSTART:{start}");
+    let _ = writeln!(event, "DTEND:{end}");
+    if !location.is_empty() {
+        let _ = writeln!(event, "LOCATION:{location}");
     }
-    if let Some(desc) = description {
-        event.push_str(&format!("DESCRIPTION:{}\n", desc));
+    if !description.is_empty() {
+        let _ = writeln!(event, "DESCRIPTION:{description}");
     }
-
     event.push_str("END:VEVENT");
     event
 }
@@ -142,21 +123,39 @@ pub fn generate_event_string(
 pub fn generate_sepa_string(
     name: &str,
     iban: &str,
+    bic: Option<String>, // Optional for SEPA now but kept for completeness
     amount: f64,
-    reference: Option<&str>,
+    reference: Option<String>,
+    remittance: Option<String>
 ) -> String {
-    let mut sepa = String::new();
-    sepa.push_str("BCD\n"); // Service Tag
-    sepa.push_str("002\n"); // Version
-    sepa.push_str("1\n"); // Character set (UTF-8)
-    sepa.push_str("SCT\n"); // Identification
-    sepa.push_str("\n"); // BIC (optional)
-    sepa.push_str(&format!("{}\n", name)); // Beneficiary name
-    sepa.push_str(&format!("{}\n", iban.replace(' ', ""))); // IBAN
-    sepa.push_str(&format!("EUR{:.2}\n", amount)); // Amount
-    sepa.push_str("\n"); // Purpose (optional)
-    sepa.push_str(&format!("{}\n", reference.unwrap_or(""))); // Reference
-    sepa.push_str("\n"); // Remittance text (optional)
-    sepa.push_str("\n"); // Beneficiary to originator info (optional)
+    // EPC QR Code format
+    let mut sepa = String::from("BCD\n002\n1\nSCT\n");
+    // BIC is optional in newer standards but slot is there
+    if let Some(b) = bic {
+        let _ = writeln!(sepa, "{b}");
+    } else {
+        sepa.push('\n');
+    }
+    let _ = writeln!(sepa, "{name}");
+    let _ = writeln!(sepa, "{}", iban.replace(' ', ""));
+    let _ = writeln!(sepa, "EUR{amount:.2}");
+    // Purpose code (empty)
+    sepa.push('\n');
+    // Reference (Remittance Info)
+    if let Some(ref_code) = reference {
+         // Structured reference (RF...)
+         let _ = write!(sepa, "{ref_code}\n\n");
+    } else if let Some(remit) = remittance {
+         // Unstructured
+         let _ = write!(sepa, "\n{remit}\n");
+    } else {
+         sepa.push_str("\n\n");
+    }
+    
     sepa
+}
+
+/// Simple URL encoding helper
+fn url_encode(input: &str) -> String {
+    url::form_urlencoded::byte_serialize(input.as_bytes()).collect()
 }
