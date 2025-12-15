@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use colored::Colorize;
 
 use human_panic::setup_panic;
