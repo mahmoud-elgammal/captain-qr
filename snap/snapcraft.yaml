@@ -1,0 +1,43 @@
+name: cqr
+base: core22
+version: "0.1.0"
+summary: Generate and decode QR codes like a captain!
+description: |
+  A powerful CLI tool to generate QR codes for WiFi networks, URLs, 
+  text, contacts (vCard), emails, phone numbers, SMS, geographic 
+  locations, Bitcoin payments, calendar events, and SEPA bank transfers.
+
+  Features:
+  - Multiple output formats (PNG, SVG, terminal, base64)
+  - Customizable colors and error correction levels
+  - Batch processing from CSV/JSON files
+  - QR code decoding from images
+  - Shell completions for bash, zsh, fish, and PowerShell
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+apps:
+  cqr:
+    command: bin/cqr
+    plugs:
+      - home
+      - removable-media
+
+parts:
+  cqr:
+    plugin: rust
+    source: .
+    build-packages:
+      - pkg-config
+      - libssl-dev
+    stage-packages:
+      - libssl3
+
+layout:
+  /usr/share/fonts:
+    bind: $SNAP/usr/share/fonts

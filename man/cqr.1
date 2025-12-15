@@ -1,0 +1,251 @@
+.TH CQR 1 "December 2024" "cqr 0.1.0" "User Commands"
+.SH NAME
+cqr \- Generate and decode QR codes like a captain!
+.SH SYNOPSIS
+.B cqr
+[\fIOPTIONS\fR] \fICOMMAND\fR [\fIARGS\fR]
+.SH DESCRIPTION
+.B cqr
+(Captain QR) is a powerful command-line tool for generating and decoding QR codes.
+It supports multiple content types including WiFi credentials, URLs, text, contacts,
+emails, phone numbers, SMS, geographic locations, Bitcoin payments, calendar events,
+and SEPA bank transfers.
+.SH GLOBAL OPTIONS
+.TP
+.BR \-o ", " \-\-output " " \fIFILE\fR
+Output file path (default: qrcode.png)
+.TP
+.BR \-s ", " \-\-size " " \fIPIXELS\fR
+Size of the QR code image in pixels (default: 512)
+.TP
+.BR \-F ", " \-\-format " " \fIFORMAT\fR
+Output format: png, svg, terminal, base64 (default: png)
+.TP
+.BR \-e ", " \-\-error\-correction " " \fILEVEL\fR
+Error correction level: l, m, q, h (default: m)
+.TP
+.BR \-\-fg\-color " " \fICOLOR\fR
+Foreground color in hex format (default: #000000)
+.TP
+.BR \-\-bg\-color " " \fICOLOR\fR
+Background color in hex format (default: #FFFFFF)
+.TP
+.BR \-\-quiet\-zone " " \fIMODULES\fR
+Quiet zone size in modules (default: 2)
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose output
+.TP
+.BR \-q ", " \-\-quiet
+Suppress all output except errors
+.TP
+.BR \-h ", " \-\-help
+Print help information
+.TP
+.BR \-V ", " \-\-version
+Print version information
+.SH COMMANDS
+.SS wifi
+Generate QR code for WiFi network.
+.TP
+.BR \-s ", " \-\-ssid " " \fINAME\fR
+Network SSID (required)
+.TP
+.BR \-p ", " \-\-password " " \fIPASS\fR
+Network password
+.TP
+.BR \-t ", " \-\-security " " \fITYPE\fR
+Security type: wpa, wep, none (default: wpa)
+.TP
+.BR \-H ", " \-\-hidden
+Hidden network flag
+.SS url
+Generate QR code for a URL.
+.TP
+.I URL
+The URL to encode (required)
+.SS text
+Generate QR code for plain text.
+.TP
+.I TEXT
+The text to encode (required)
+.SS email
+Generate QR code for email.
+.TP
+.BR \-a ", " \-\-address " " \fIEMAIL\fR
+Email address (required)
+.TP
+.BR \-s ", " \-\-subject " " \fITEXT\fR
+Email subject
+.TP
+.BR \-b ", " \-\-body " " \fITEXT\fR
+Email body
+.SS phone
+Generate QR code for phone number.
+.TP
+.I NUMBER
+Phone number (required)
+.SS sms
+Generate QR code for SMS.
+.TP
+.BR \-n ", " \-\-number " " \fINUMBER\fR
+Phone number (required)
+.TP
+.BR \-m ", " \-\-message " " \fITEXT\fR
+Message body
+.SS vcard
+Generate QR code for vCard contact.
+.TP
+.BR \-f ", " \-\-first\-name " " \fINAME\fR
+First name (required)
+.TP
+.BR \-l ", " \-\-last\-name " " \fINAME\fR
+Last name (required)
+.TP
+.BR \-p ", " \-\-phone " " \fINUMBER\fR
+Phone number
+.TP
+.BR \-e ", " \-\-email " " \fIEMAIL\fR
+Email address
+.TP
+.BR \-o ", " \-\-org " " \fINAME\fR
+Organization/Company
+.SS geo
+Generate QR code for geographic location.
+.TP
+.BR \-a ", " \-\-lat " " \fILATITUDE\fR
+Latitude (required)
+.TP
+.BR \-o ", " \-\-lon " " \fILONGITUDE\fR
+Longitude (required)
+.SS bitcoin
+Generate QR code for Bitcoin payment.
+.TP
+.BR \-a ", " \-\-address " " \fIADDRESS\fR
+Bitcoin address (required)
+.TP
+.BR \-m ", " \-\-amount " " \fIBTC\fR
+Amount in BTC
+.TP
+.BR \-l ", " \-\-label " " \fINAME\fR
+Label/name
+.TP
+.BR \-M ", " \-\-message " " \fITEXT\fR
+Message
+.SS event
+Generate QR code for calendar event.
+.TP
+.BR \-t ", " \-\-title " " \fITITLE\fR
+Event title (required)
+.TP
+.BR \-s ", " \-\-start " " \fIDATETIME\fR
+Start date/time in ISO 8601 format (required)
+.TP
+.BR \-e ", " \-\-end " " \fIDATETIME\fR
+End date/time in ISO 8601 format (required)
+.TP
+.BR \-l ", " \-\-location " " \fILOCATION\fR
+Event location
+.TP
+.BR \-d ", " \-\-description " " \fITEXT\fR
+Event description
+.SS sepa
+Generate QR code for SEPA bank transfer.
+.TP
+.BR \-n ", " \-\-name " " \fINAME\fR
+Beneficiary name (required)
+.TP
+.BR \-i ", " \-\-iban " " \fIIBAN\fR
+IBAN (required)
+.TP
+.BR \-a ", " \-\-amount " " \fIEUR\fR
+Amount in EUR (required)
+.TP
+.BR \-r ", " \-\-reference " " \fITEXT\fR
+Payment reference
+.SS decode
+Decode QR code from an image file.
+.TP
+.I IMAGE
+Path to image file (required)
+.TP
+.BR \-\-json
+Output decoded data as JSON
+.SS batch
+Batch generate QR codes from CSV or JSON file.
+.TP
+.BR \-i ", " \-\-input " " \fIFILE\fR
+Input file (CSV or JSON)
+.TP
+.BR \-o ", " \-\-output\-dir " " \fIDIR\fR
+Output directory (default: ./qrcodes)
+.SS completions
+Generate shell completions.
+.TP
+.I SHELL
+Shell to generate completions for: bash, zsh, fish, powershell, elvish
+.SH EXAMPLES
+Generate WiFi QR code:
+.PP
+.RS
+.nf
+cqr wifi -s "MyNetwork" -p "secret123"
+.fi
+.RE
+.PP
+Generate URL QR code as SVG:
+.PP
+.RS
+.nf
+cqr url "https://example.com" -o link.svg -F svg
+.fi
+.RE
+.PP
+Display QR code in terminal:
+.PP
+.RS
+.nf
+cqr text "Hello World" --format terminal
+.fi
+.RE
+.PP
+Decode a QR code:
+.PP
+.RS
+.nf
+cqr decode image.png
+.fi
+.RE
+.PP
+Batch generate from CSV:
+.PP
+.RS
+.nf
+cqr batch --input data.csv --output-dir ./codes/
+.fi
+.RE
+.PP
+Generate shell completions:
+.PP
+.RS
+.nf
+cqr completions bash > ~/.local/share/bash-completion/completions/cqr
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+.TP
+.B 1
+Error occurred
+.SH AUTHOR
+Written by the Captain QR contributors.
+.SH REPORTING BUGS
+Report bugs at: https://github.com/yourusername/captain-qr/issues
+.SH COPYRIGHT
+Copyright \(co 2024 Captain QR contributors.
+Licensed under the MIT License.
+.SH SEE ALSO
+.BR qrencode (1),
+.BR zbarimg (1)
